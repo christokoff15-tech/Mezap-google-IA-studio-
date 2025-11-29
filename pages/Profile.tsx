@@ -1,8 +1,8 @@
+
 import React, { useState } from 'react';
-import { User, Settings, Award, Flame, BookOpen, Edit3, Save } from 'lucide-react';
+import { Settings, Award, Flame, BookOpen, Save, Shield, LogOut, ChevronRight } from 'lucide-react';
 import { MOCK_USER } from '../constants';
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { Button } from '../components/Button';
 
 const data = [
   { name: 'Lun', minutes: 20 },
@@ -14,7 +14,11 @@ const data = [
   { name: 'Dim', minutes: 90 },
 ];
 
-export const Profile: React.FC = () => {
+interface ProfileProps {
+  onAdminClick?: () => void;
+}
+
+export const Profile: React.FC<ProfileProps> = ({ onAdminClick }) => {
   const [activeTab, setActiveTab] = useState<'stats' | 'journal'>('stats');
   const [journalText, setJournalText] = useState('');
 
@@ -24,7 +28,9 @@ export const Profile: React.FC = () => {
       <div className="bg-indigo-900 text-white pt-10 pb-16 px-6 rounded-b-[2.5rem] relative">
          <div className="flex justify-between items-start mb-6">
             <h1 className="text-xl font-bold">Mon Espace</h1>
-            <Settings className="text-indigo-200" size={24} />
+            <button onClick={onAdminClick} className="hover:opacity-80 transition-opacity p-2 bg-indigo-800/50 rounded-full">
+               <Settings className="text-indigo-200" size={20} />
+            </button>
          </div>
          <div className="flex items-center gap-4">
             <div className="relative">
@@ -40,7 +46,7 @@ export const Profile: React.FC = () => {
          </div>
 
          {/* Stats Cards floating */}
-         <div className="absolute -bottom-10 left-6 right-6 flex justify-between bg-white rounded-xl shadow-lg p-4 text-gray-800">
+         <div className="absolute -bottom-10 left-6 right-6 flex justify-between bg-white rounded-xl shadow-lg p-4 text-gray-800 border border-gray-100">
             <div className="flex flex-col items-center flex-1 border-r border-gray-100">
                <div className="flex items-center gap-1 text-orange-500 font-bold text-lg">
                   <Flame size={20} fill="currentColor" /> {MOCK_USER.streak}
@@ -99,6 +105,33 @@ export const Profile: React.FC = () => {
                          <span className={`text-xs font-medium ${idx < 2 ? 'text-gray-900' : 'text-gray-400'}`}>{badge}</span>
                       </div>
                    ))}
+                </div>
+             </div>
+
+             {/* Account Actions */}
+             <div>
+                <h3 className="font-bold text-gray-800 mb-3">Paramètres</h3>
+                <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
+                   <button 
+                     onClick={onAdminClick}
+                     className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors border-b border-gray-100"
+                   >
+                      <div className="flex items-center gap-3">
+                         <div className="p-2 bg-purple-100 text-purple-600 rounded-lg">
+                            <Shield size={18} />
+                         </div>
+                         <span className="font-medium text-gray-900 text-sm">Portail Administrateur</span>
+                      </div>
+                      <ChevronRight size={18} className="text-gray-400" />
+                   </button>
+                   <button className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
+                      <div className="flex items-center gap-3">
+                         <div className="p-2 bg-red-100 text-red-600 rounded-lg">
+                            <LogOut size={18} />
+                         </div>
+                         <span className="font-medium text-red-600 text-sm">Déconnexion</span>
+                      </div>
+                   </button>
                 </div>
              </div>
           </div>

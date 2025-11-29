@@ -1,103 +1,120 @@
 import React, { useState } from 'react';
-import { Mail, Check } from 'lucide-react';
+import { ArrowRight, Check } from 'lucide-react';
 import { Button } from '../components/Button';
 
 interface OnboardingProps {
-  onLogin: () => void;
+  onComplete: (mode: 'guest' | 'auth') => void;
 }
 
-export const Onboarding: React.FC<OnboardingProps> = ({ onLogin }) => {
-  const [step, setStep] = useState<'intro' | 'auth'>('intro');
+export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
+  const [step, setStep] = useState(0);
 
-  if (step === 'intro') {
+  const slides = [
+    {
+      title: "Bienvenue sur MEZAP",
+      desc: "Votre sanctuaire numérique pour une croissance spirituelle quotidienne.",
+      color: "bg-purple-600",
+      image: "https://images.unsplash.com/photo-1491841550275-ad7854e35ca6?auto=format&fit=crop&q=80&w=800"
+    },
+    {
+      title: "MEZAP TV",
+      desc: "Des proclamations et enseignements en continu, 24h/24 pour édifier votre foi.",
+      color: "bg-blue-600",
+      image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&q=80&w=800"
+    },
+    {
+      title: "Communauté de Prière",
+      desc: "Rejoignez des milliers de chrétiens. Partagez, priez et témoignez ensemble.",
+      color: "bg-indigo-600",
+      image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&q=80&w=800"
+    }
+  ];
+
+  const handleNext = () => {
+    if (step < slides.length - 1) {
+      setStep(step + 1);
+    } else {
+      // Show auth choice
+      setStep(3);
+    }
+  };
+
+  if (step === 3) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-indigo-800 to-purple-900 flex flex-col text-white p-6 relative overflow-hidden">
-        <div className="flex-1 flex flex-col justify-center items-center text-center z-10">
-          <div className="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center mb-8 backdrop-blur-sm border border-white/20">
-            <span className="text-4xl font-bold">M</span>
+      <div className="min-h-screen bg-white flex flex-col p-6 animate-fade-in">
+        <div className="flex-1 flex flex-col justify-end pb-12">
+          <div className="w-20 h-20 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center mb-6 shadow-xl text-white">
+            <span className="text-3xl font-bold">M</span>
           </div>
-          <h1 className="text-4xl font-bold mb-4 tracking-tight">MEZAP</h1>
-          <p className="text-lg text-indigo-200 mb-8 max-w-xs">
-            Votre compagnon spirituel quotidien pour des proclamations puissantes.
-          </p>
-          <div className="space-y-4 w-full max-w-xs">
-            <div className="flex items-center gap-3 bg-white/5 p-3 rounded-lg backdrop-blur-sm">
-               <Check className="text-green-400 flex-shrink-0" />
-               <span className="text-sm text-left">Croissance spirituelle 24h/24</span>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Prêt à commencer ?</h1>
+          <p className="text-gray-500 mb-8">Créez un compte pour sauvegarder votre progression ou explorez librement.</p>
+
+          <div className="space-y-3">
+            <Button fullWidth onClick={() => onComplete('auth')} size="lg">
+              Créer un compte
+            </Button>
+            <Button fullWidth variant="outline" onClick={() => onComplete('auth')} size="lg">
+              Se connecter
+            </Button>
+            <div className="my-2 flex items-center justify-center">
+              <span className="text-gray-400 text-sm">ou</span>
             </div>
-            <div className="flex items-center gap-3 bg-white/5 p-3 rounded-lg backdrop-blur-sm">
-               <Check className="text-green-400 flex-shrink-0" />
-               <span className="text-sm text-left">Proclamations audio guidées</span>
-            </div>
-            <div className="flex items-center gap-3 bg-white/5 p-3 rounded-lg backdrop-blur-sm">
-               <Check className="text-green-400 flex-shrink-0" />
-               <span className="text-sm text-left">Communauté de prière</span>
-            </div>
+            <button 
+              onClick={() => onComplete('guest')}
+              className="w-full py-4 text-gray-600 font-medium hover:text-purple-600 transition-colors"
+            >
+              Continuer en mode Invité
+            </button>
           </div>
         </div>
-        <div className="z-10 mt-8 mb-4">
-          <Button 
-            fullWidth 
-            size="lg" 
-            className="bg-white text-indigo-900 hover:bg-gray-100 font-bold"
-            onClick={() => setStep('auth')}
-          >
-            Commencer
-          </Button>
-        </div>
-        
-        {/* Background blobs */}
-        <div className="absolute top-0 left-0 w-64 h-64 bg-indigo-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob" />
-        <div className="absolute top-0 right-0 w-64 h-64 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col p-6">
-      <div className="flex-1 flex flex-col justify-center max-w-md mx-auto w-full">
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">Bienvenue</h2>
-        <p className="text-gray-500 mb-8">Connectez-vous pour accéder à vos proclamations.</p>
-
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Email</label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-3 text-gray-400" size={20} />
-              <input 
-                type="email" 
-                placeholder="votre@email.com" 
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
-              />
-            </div>
-          </div>
-          
-          <Button fullWidth onClick={onLogin}>Se connecter</Button>
-          
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Ou continuer avec</span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <button className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors">
-              <span className="text-red-500 font-bold">G</span>
-              <span className="ml-2 font-medium text-gray-700">Google</span>
-            </button>
-            <button className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors">
-              <span className="text-blue-600 font-bold">f</span>
-              <span className="ml-2 font-medium text-gray-700">Facebook</span>
-            </button>
-          </div>
-        </div>
+    <div className="h-screen relative flex flex-col bg-gray-900">
+      {/* Background Image with Overlay */}
+      <div className="absolute inset-0 z-0">
+        <img 
+          src={slides[step].image} 
+          alt="Onboarding" 
+          className="w-full h-full object-cover opacity-60 transition-opacity duration-500" 
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/80 to-transparent" />
       </div>
-      <p className="text-center text-xs text-gray-400 mt-6">
-        En continuant, vous acceptez nos conditions d'utilisation et notre politique de confidentialité.
-      </p>
+
+      {/* Content */}
+      <div className="relative z-10 flex-1 flex flex-col justify-end p-8 pb-12">
+        <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-white text-xs font-medium mb-6 w-fit border border-white/10">
+          Étape {step + 1} sur 3
+        </span>
+        
+        <h2 className="text-4xl font-bold text-white mb-4 leading-tight">
+          {slides[step].title}
+        </h2>
+        <p className="text-lg text-gray-300 mb-8 leading-relaxed">
+          {slides[step].desc}
+        </p>
+
+        {/* Indicators */}
+        <div className="flex gap-2 mb-8">
+          {slides.map((_, i) => (
+            <div 
+              key={i} 
+              className={`h-1.5 rounded-full transition-all duration-300 ${i === step ? 'w-8 bg-white' : 'w-2 bg-white/30'}`} 
+            />
+          ))}
+        </div>
+
+        <Button 
+          onClick={handleNext}
+          className="bg-white text-gray-900 hover:bg-gray-100 shadow-xl border-none"
+          size="lg"
+        >
+          {step === slides.length - 1 ? 'Commencer' : 'Suivant'}
+          <ArrowRight className="ml-2" size={20} />
+        </Button>
+      </div>
     </div>
   );
 };
